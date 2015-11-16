@@ -1,0 +1,18 @@
+diff -Naurw go/src/make.bash go.orig/src/make.bash
+--- go/src/make.bash	2015-09-23 06:37:37.000000000 +0200
++++ go.orig/src/make.bash	2015-11-16 08:52:54.668350836 +0100
+@@ -166,12 +166,12 @@
+ 	# CC_FOR_TARGET is recorded as the default compiler for the go tool. When building for the host, however,
+ 	# use the host compiler, CC, from `cmd/dist/dist env` instead.
+ 	CC=$CC GOOS=$GOHOSTOS GOARCH=$GOHOSTARCH \
+-		"$GOTOOLDIR"/go_bootstrap install -ccflags "$GO_CCFLAGS" -gcflags "$GO_GCFLAGS" -ldflags "$GO_LDFLAGS" -v std
++		"$GOTOOLDIR"/go_bootstrap install -x -ccflags "$GO_CCFLAGS" -gcflags "$GO_GCFLAGS" -ldflags "$GO_LDFLAGS" -v std
+ 	echo
+ fi
+ 
+ echo "# Building packages and commands for $GOOS/$GOARCH."
+-CC=$CC_FOR_TARGET "$GOTOOLDIR"/go_bootstrap install $GO_FLAGS -ccflags "$GO_CCFLAGS" -gcflags "$GO_GCFLAGS" -ldflags "$GO_LDFLAGS" -v std
++CC=$CC_FOR_TARGET "$GOTOOLDIR"/go_bootstrap install -x $GO_FLAGS -ccflags "$GO_CCFLAGS" -gcflags "$GO_GCFLAGS" -ldflags "$GO_LDFLAGS" -v std
+ echo
+ 
+ rm -f "$GOTOOLDIR"/go_bootstrap
