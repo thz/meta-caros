@@ -10,6 +10,11 @@
 # APP_PREFIX          (default is "/opt/apps")
 # SYSCONFIG_PREFIX    (default is "${sysconfdir}/apps")
 # CONFFILE            (default is "${SYSCONFIG_PREFIX}/${APPNAME}.conf")
+# ALT_REL_CONF        (default is "")
+#      if set, this specifies an alternate path to
+#      the default-configuration in the sources.
+#      if unset or empty, "config/${REL_NAME}.conf"
+#      is used as default-configuration-origin.
 #####################################################
 
 APPNAME ?= "${PN}"
@@ -134,10 +139,11 @@ do_install() {
     echo "exec ${APPNAME} \"\$@\"" >> ${erts_base}/bin/beam.smp
     chmod 755 ${erts_base}/bin/beam.smp
 
-    if [ -f ${S}/config/${REL_NAME}.conf ];
+    [ -z "${ALT_REL_CONF}" ] && ALT_REL_CONF="config/${REL_NAME}.conf"
+    if [ -f "${S}/${ALT_REL_CONF}" ];
     then
         install -m 0755 -d "${D}/${SYSCONFIG_PREFIX}"
-        install -m 0644 ${S}/config/${REL_NAME}.conf ${D}${CONFFILE}
+        install -m 0644 "${S}/${ALT_REL_CONF}" ${D}${CONFFILE}
         echo >> ${D}${CONFFILE}
         echo "# Choose the logging level for the journal backend." >> ${D}${CONFFILE}
         echo "# Allowed values: emerg, alert, crit, error, warning, notive, info, debug, false" >> ${D}${CONFFILE}
