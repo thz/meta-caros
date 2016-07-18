@@ -18,14 +18,12 @@ DESCRIPTION = "Linux container runtime \
  subtle and/or glaring issues. \
  "
 
-SRCREV = "76d6bc9a9f1690e16f3721ba165364688b626de2"
+SRCREV = "e4a0dbc47232e3a9da4cfe6ce44f250e6e85ed43"
 SRC_URI = "\
 	git://github.com/docker/docker.git;nobranch=1 \
 	file://docker.service \
 	file://docker.init \
 	file://hi.Dockerfile \
-	file://disable_sha1sum_startup.patch \
-	file://Bump-bolt-to-v1.1.0.patch \
 	"
 
 # Apache-2.0 for docker
@@ -34,7 +32,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=cc2221abf0b96ea39dd68141b70f7937"
 
 S = "${WORKDIR}/git"
 
-DOCKER_VERSION = "1.9.0"
+DOCKER_VERSION = "1.12.0-rc4"
 PV = "${DOCKER_VERSION}+git${SRCREV}"
 
 DEPENDS = "go-cross \
@@ -108,10 +106,12 @@ INITSCRIPT_PARAMS_${PN} = "${OS_DEFAULT_INITSCRIPT_PARAMS}"
 
 do_install() {
 	mkdir -p ${D}/${bindir}
-	cp ${S}/bundles/${DOCKER_VERSION}/dynbinary/docker-${DOCKER_VERSION} \
+	cp ${S}/bundles/${DOCKER_VERSION}/dynbinary-client/docker-${DOCKER_VERSION} \
 	  ${D}/${bindir}/docker
-	cp ${S}/bundles/${DOCKER_VERSION}/dynbinary/dockerinit-${DOCKER_VERSION} \
-	  ${D}/${bindir}/dockerinit
+	cp ${S}/bundles/${DOCKER_VERSION}/dynbinary-daemon/dockerd-${DOCKER_VERSION} \
+	  ${D}/${bindir}/dockerd
+	cp ${S}/bundles/${DOCKER_VERSION}/dynbinary-daemon/docker-proxy-${DOCKER_VERSION} \
+	  ${D}/${bindir}/docker-proxy
 
 	if ${@base_contains('DISTRO_FEATURES','systemd','true','false',d)}; then
 		install -d ${D}${systemd_unitdir}/system
